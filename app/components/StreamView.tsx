@@ -134,7 +134,8 @@ export default function StreamView({
                 body: JSON.stringify({
                     creatorId,
                     url: inputLink
-                })
+                }),
+                credentials: "include",
             })
             const data = await res.json()
             if (!res.ok) {
@@ -169,7 +170,8 @@ export default function StreamView({
             method: "POST",
             body: JSON.stringify({
                 streamId: id
-            })
+            }),
+            credentials: "include",
         })
     }
 
@@ -179,6 +181,7 @@ export default function StreamView({
                 setPlayNextLoader(true)
                 const data = await fetch('/api/streams/next', {
                     method: "GET",
+                    credentials: "include",
                 })
                 const json = await data.json()
                 setCurrentVideo(json.stream)
@@ -204,7 +207,8 @@ export default function StreamView({
     const emptyQueue = async () => {
         try {
             const res = await fetch("/api/streams/empty-queue", {
-                method: "POST"
+                method: "POST",
+                credentials: "include",
             });
             const data = await res.json();
             if (res.ok) {
@@ -224,6 +228,7 @@ export default function StreamView({
         try {
             const res = await fetch(`/api/streams/remove?streamId=${streamId}`, {
                 method: "DELETE",
+                credentials: "include",
             })
             if (res.ok) {
                 toast.success("Song removed successfully")

@@ -55,6 +55,7 @@ const handler = NextAuth({
             return {
                 ...session, 
                 user: {
+                    ...session.user,
                     id: dbUser.id
                 }
             }
