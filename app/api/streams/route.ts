@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
             upvotes: 0
         });
     } catch(e) {
-        console.error(e);
+        console.error("STREAMS API ERROR: ", e);
         return NextResponse.json({
             message: "Error while adding a stream"
         }, {
