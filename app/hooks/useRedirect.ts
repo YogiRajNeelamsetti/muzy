@@ -4,14 +4,16 @@ import { useRouter } from "next/navigation";
 
 
 export default function useRedirect() {
-    const session = useSession();
+    const { data: session, status} = useSession();
     const router = useRouter();
 
-    useEffect(() => {
-        if (session.status === "authenticated") {
-            router.push("/dashboard")
-        } else {
-            router.push("/")
-        }
-    }, [session])
+    const goToDashboard = () => {
+        router.push("/dashboard");
+    }
+
+    return {
+        session,
+        status,
+        goToDashboard,
+    }
 }
