@@ -13,9 +13,7 @@ import { YT_REGEX } from '../lib/utils'
 import YouTubePlayer from 'youtube-player'
 import { useSession } from "next-auth/react"
 import type { Session } from "next-auth"
-import { useCallback } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
-import Image from 'next/image'
 
 interface Video {
     id: string
@@ -60,8 +58,7 @@ export default function StreamView({
     const [isCreator, setIsCreator] = useState(false)
     const [isEmptyQueueDialogOpen, setIsEmptyQueueDialogOpen] = useState(false)
 
-
-    const refreshStreams = useCallback(async () => {
+    async function refreshStreams() {
         try {
             const res = await fetch(`/api/streams/?creatorId=${creatorId}`, {
                 credentials: "include"
@@ -90,31 +87,13 @@ export default function StreamView({
             setQueue([])
             setCurrentVideo(null)
         }
-    }, [creatorId])
+    }
 
     useEffect(() => {
         refreshStreams()
         const interval = setInterval(refreshStreams, REFRESH_INTERVAL_MS)
         return () => clearInterval(interval)
-    }, [creatorId, refreshStreams])
-
-    const playNext = useCallback(async () => {
-        if (queue.length > 0) {
-            try {
-                setPlayNextLoader(true)
-                const data = await fetch('/api/streams/next', {
-                    method: "GET",
-                })
-                const json = await data.json()
-                setCurrentVideo(json.stream)
-                setQueue(q => q.filter(x => x.id !== json.stream?.id))
-            } catch(e) {
-                console.error("Error playing next song:", e)
-            } finally {
-                setPlayNextLoader(false)
-            }
-        }
-    }, [queue])
+    }, [creatorId])
 
     useEffect(() => {
         if (!videoPlayerRef.current || !currentVideo) return
@@ -133,7 +112,7 @@ export default function StreamView({
         return () => {
             player.destroy()
         }
-    }, [currentVideo, videoPlayerRef, playNext])
+    }, [currentVideo, videoPlayerRef])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -192,6 +171,24 @@ export default function StreamView({
                 streamId: id
             })
         })
+    }
+
+    const playNext = async () => {
+        if (queue.length > 0) {
+            try {
+                setPlayNextLoader(true)
+                const data = await fetch('/api/streams/next', {
+                    method: "GET",
+                })
+                const json = await data.json()
+                setCurrentVideo(json.stream)
+                setQueue(q => q.filter(x => x.id !== json.stream?.id))
+            } catch(e) {
+                console.error("Error playing next song:", e)
+            } finally {
+                setPlayNextLoader(false)
+            }
+        }
     }
 
     const handleShare = () => {
@@ -272,7 +269,7 @@ export default function StreamView({
                                 {queue.map((video) => (
                                     <Card key={video.id} className="bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl transition-shadow">
                                         <CardContent className="p-4 flex items-center space-x-4">
-                                            <Image 
+                                            <img 
                                                 src={video.smallImg}
                                                 alt={`Thumbnail for ${video.title}`}
                                                 className="w-32 h-24 object-cover rounded-md"
@@ -339,7 +336,7 @@ export default function StreamView({
                                             <div ref={videoPlayerRef} className='w-full aspect-video' />
                                         ) : (
                                             <>
-                                                <Image 
+                                                <img 
                                                     src={currentVideo.bigImg} 
                                                     className="w-full aspect-video object-cover rounded-md"
                                                     alt={currentVideo.title}
