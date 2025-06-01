@@ -59,3 +59,5 @@ export async function GET() {
         stream: mostUpvotedStream
     })
 }
+
+export const runtime = "edge";
