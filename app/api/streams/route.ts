@@ -52,6 +52,14 @@ export async function POST(req: NextRequest) {
         const extractedId = data.url.split("?v=")[1];
         const res = await youtubesearchapi.GetVideoDetails(extractedId);
 
+        if (!res || !res.thumbnail || !Array.isArray(res.thumbnail.thumbnails)) {
+            return NextResponse.json({
+                message: "Could not fetch video details or thumbnails"
+            }, {
+                status: 400
+            });
+        }
+
         // Check if the user is not the creator
         if (user.id !== data.creatorId) {
             const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
