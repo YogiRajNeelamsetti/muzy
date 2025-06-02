@@ -5,7 +5,6 @@ import { z } from "zod";
 import youtubesearchapi from "youtube-search-api";
 import { YT_REGEX } from "@/app/lib/utils";
 import { URL } from "url";
-import { authOptions } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
 const CreateStreamSchema = z.object({
