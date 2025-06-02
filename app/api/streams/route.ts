@@ -234,5 +234,3 @@ export async function GET(req: NextRequest) {
         isCreator
     });
 }
-
-export const runtime = "nodejs";

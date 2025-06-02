@@ -26,6 +26,4 @@ export const GET = async (req: NextRequest) => {
 
 // dont static render
 
-
-export const runtime = "nodejs";
 export const dynamic = 'force-dynamic'
