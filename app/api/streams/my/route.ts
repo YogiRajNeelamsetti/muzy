@@ -1,9 +1,10 @@
 import { prismaClient } from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(req: NextRequest) {
-    const session =  await getServerSession();
+    const session =  await getServerSession(authOptions);
     // can get rid of db call here
 
     // how to get rid of db call here ? 

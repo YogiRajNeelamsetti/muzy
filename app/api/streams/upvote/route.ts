@@ -2,6 +2,7 @@ import { prismaClient } from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 const UpvoteSchema = z.object({
     streamId: z.string()
@@ -9,7 +10,7 @@ const UpvoteSchema = z.object({
 
 export async function POST(req: NextRequest) {
     
-    const session =  await getServerSession();
+    const session =  await getServerSession(authOptions);
 
     const user = await prismaClient.user.findFirst({
         where: {

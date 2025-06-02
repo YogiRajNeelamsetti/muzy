@@ -5,6 +5,8 @@ import { z } from "zod";
 import youtubesearchapi from "youtube-search-api";
 import { YT_REGEX } from "@/app/lib/utils";
 import { getServerSession } from "next-auth";
+import { URL } from "url";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 const CreateStreamSchema = z.object({
     creatorId: z.string(),
@@ -15,7 +17,7 @@ const MAX_QUEUE_LEN = 20;
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const session = await getServerSession(authOptions);
         const user = await prismaClient.user.findFirst({
             where: {
                 email: session?.user?.email ?? ""
@@ -49,7 +51,14 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const extractedId = data.url.split("?v=")[1];
+        let extractedId = "";
+        try {
+        const ytUrl = new URL(data.url);
+        extractedId = ytUrl.searchParams.get("v") || ytUrl.pathname.split("/").pop() || "";
+        } catch {
+        return NextResponse.json({ message: "Invalid YouTube URL" }, { status: 400 });
+        }
+
         const res = await youtubesearchapi.GetVideoDetails(extractedId);
 
         // Check if the user is not the creator
@@ -161,7 +170,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
     const creatorId = req.nextUrl.searchParams.get("creatorId");
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     const user = await prismaClient.user.findFirst({
         where: {
             email: session?.user?.email ?? ""
