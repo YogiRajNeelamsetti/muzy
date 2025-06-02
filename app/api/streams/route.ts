@@ -4,9 +4,9 @@ import { z } from "zod";
 //@ts-ignore
 import youtubesearchapi from "youtube-search-api";
 import { YT_REGEX } from "@/app/lib/utils";
-import { getServerSession } from "next-auth";
 import { URL } from "url";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const CreateStreamSchema = z.object({
     creatorId: z.string(),
@@ -169,6 +169,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+    const res = new NextResponse();
     const creatorId = req.nextUrl.searchParams.get("creatorId");
     const session = await getServerSession(authOptions);
     const user = await prismaClient.user.findFirst({
