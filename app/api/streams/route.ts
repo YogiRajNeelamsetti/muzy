@@ -17,7 +17,7 @@ const MAX_QUEUE_LEN = 20;
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession();
         const user = await prismaClient.user.findFirst({
             where: {
                 email: session?.user?.email ?? ""
@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     const res = new NextResponse();
     const creatorId = req.nextUrl.searchParams.get("creatorId");
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     const user = await prismaClient.user.findFirst({
         where: {
             email: session?.user?.email ?? ""

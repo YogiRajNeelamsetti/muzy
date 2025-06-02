@@ -6,7 +6,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 
 
 export async function GET() {
-    const session =  await getServerSession(authOptions);
+    const session =  await getServerSession();
     // how to get rid of db call here ? 
     const user = await prismaClient.user.findFirst({
         where: {
