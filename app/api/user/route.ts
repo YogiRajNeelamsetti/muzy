@@ -25,5 +25,4 @@ export const GET = async (req: NextRequest) => {
 }
 
 // dont static render
-
 export const dynamic = 'force-dynamic'

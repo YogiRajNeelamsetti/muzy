@@ -4,7 +4,6 @@ import { z } from "zod";
 //@ts-ignore
 import youtubesearchapi from "youtube-search-api";
 import { YT_REGEX } from "@/app/lib/utils";
-import { URL } from "url";
 import { getServerSession } from "next-auth";
 
 const CreateStreamSchema = z.object({
@@ -50,14 +49,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        let extractedId = "";
-        try {
-        const ytUrl = new URL(data.url);
-        extractedId = ytUrl.searchParams.get("v") || ytUrl.pathname.split("/").pop() || "";
-        } catch {
-        return NextResponse.json({ message: "Invalid YouTube URL" }, { status: 400 });
-        }
-
+        const extractedId = data.url.split("?v=")[1];
         const res = await youtubesearchapi.GetVideoDetails(extractedId);
 
         // Check if the user is not the creator
@@ -158,7 +150,7 @@ export async function POST(req: NextRequest) {
             upvotes: 0
         });
     } catch(e) {
-        console.error("STREAMS API ERROR: ", e);
+        console.error(e);
         return NextResponse.json({
             message: "Error while adding a stream"
         }, {
@@ -168,7 +160,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-    const res = new NextResponse();
     const creatorId = req.nextUrl.searchParams.get("creatorId");
     const session = await getServerSession();
     const user = await prismaClient.user.findFirst({

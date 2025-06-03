@@ -13,4 +13,3 @@ export default function Creator({
         <StreamView creatorId={creatorId} playVideo={false} />
     </div>
 }
-
