@@ -7,7 +7,7 @@ export default function useRedirect() {
     const { data: session, status} = useSession();
     const router = useRouter();
 
-    const goToDashboard = () => {
+    const goToDashboard = () => { 
         router.push("/dashboard");
     }
 

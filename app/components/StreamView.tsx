@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Appbar } from './Appbar'
 import LiteYouTubeEmbed from 'react-lite-youtube-embed'
 import 'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
-import { YT_REGEX } from '../lib/utils'
+import { YT_REGEX, extractYouTubeId } from '../lib/utils'
 import YouTubePlayer from 'youtube-player'
 import { useSession } from "next-auth/react"
 import type { Session } from "next-auth"
@@ -327,7 +327,7 @@ export default function StreamView({
                                 </form>
                                 {inputLink && inputLink.match(YT_REGEX) && !loading && (
                                     <div className="mt-4">
-                                        <LiteYouTubeEmbed title="" id={inputLink.split("?v=")[1]} />
+                                        <LiteYouTubeEmbed title="" id={extractYouTubeId(inputLink) || ''} />
                                     </div>
                                 )}
                             </CardContent>
