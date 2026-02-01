@@ -18,6 +18,10 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     secret: process.env.NEXTAUTH_SECRET ?? "secret",
+    pages: {
+        error: '/api/auth/error',
+    },
+    debug: process.env.NODE_ENV === 'development',
     callbacks: {
         async signIn(params) {
             if (!params.user.email) {
