@@ -14,23 +14,12 @@ export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
         })
     ],
     secret: process.env.NEXTAUTH_SECRET ?? "secret",
     pages: {
-        signIn: '/',
         error: '/api/auth/error',
-    },
-    session: {
-        strategy: "jwt",
     },
     debug: process.env.NODE_ENV === 'development',
     callbacks: {
