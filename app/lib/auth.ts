@@ -28,23 +28,34 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
             try {
+                console.log("Attempting to sign in user:", params.user.email);
+                
                 const existingUser = await prismaClient.user.findUnique({
                     where: {
                         email: params.user.email
                     }
                 })
+                
                 if (existingUser) {
+                    console.log("User found:", existingUser.id);
                     return true
                 }
+                
+                console.log("Creating new user:", params.user.email);
                 await prismaClient.user.create({
                     data: {
                         email: params.user.email,
                         provider: "Google"
                     }
                 })
+                console.log("User created successfully");
                 return true;
             } catch (e) {
-                console.error("Sign in error:", e);
+                console.error("Sign in error details:", {
+                    error: e,
+                    message: e instanceof Error ? e.message : 'Unknown error',
+                    stack: e instanceof Error ? e.stack : undefined
+                });
                 return false;
             }
         },
