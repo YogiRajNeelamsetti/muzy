@@ -18,10 +18,9 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     secret: process.env.NEXTAUTH_SECRET ?? "secret",
-    pages: {
-        error: '/api/auth/error',
+    session: {
+        strategy: "jwt",
     },
-    debug: process.env.NODE_ENV === 'development',
     callbacks: {
         async signIn(params) {
             if (!params.user.email) {
@@ -49,22 +48,24 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
         },
-        async session({ session, token, user }) {
-            const dbUser = await prismaClient.user.findUnique({
-                where: {
-                    email: session.user.email as string
-                }
-            })
-            if (!dbUser) {
-                return session;
-            }
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: dbUser.id
+        async jwt({ token, user, account }) {
+            if (user) {
+                const dbUser = await prismaClient.user.findUnique({
+                    where: {
+                        email: user.email as string
+                    }
+                })
+                if (dbUser) {
+                    token.id = dbUser.id
                 }
             }
+            return token
+        },
+        async session({ session, token }) {
+            if (token && session.user) {
+                session.user.id = token.id as string
+            }
+            return session
         }
     }
 }
